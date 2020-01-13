@@ -10,6 +10,8 @@ const RECTANGLE_DIAMETER = 60; // 正方形の一辺の長さ
 const DISPLAY_WIDTH = 640; // ゲーム画面の横幅
 const DISPLAY_HEIGHT = 960; // ゲーム画面の縦幅
 
+var SCORE = 0; //スコアはグローバルで管理する(その方が簡単なので…)
+
 
 /*
  * 四角の定義
@@ -25,6 +27,13 @@ phina.define('Rec', {
         this.stroke = 'red'; // 四角のふちの色
         this.width = RECTANGLE_DIAMETER; //四角の縦幅
         this.height = RECTANGLE_DIAMETER; //四角の横幅
+
+        //四角をクリックできるようにする
+        this.setInteractive(true); //四角をクリック可能に
+        this.onpointstart = () => { //クリックが始まった瞬間の処理
+            SCORE += 1; //スコアを1追加
+            this.remove(); //自身を削除
+        };
     },
 
     //毎フレームごとに、どうふるまうか
@@ -33,6 +42,32 @@ phina.define('Rec', {
 
         this.x += speed;
     },
+});
+
+
+
+/*
+ * スコア表示用Labalの定義
+ */
+phina.define('scoreLabel', {
+    superClass: 'Label',
+
+    //初期化
+    init: function(options) {
+        this.superInit(); //初期化のおまじない
+
+        this.text = "0"; //最初のtextは 0
+        this.fontsize = 64; //フォントの大きさ
+        this.x = DISPLAY_WIDTH / 2; //表示位置(x座標)
+        this.y = DISPLAY_HEIGHT - (DISPLAY_HEIGHT / 9); //表示位置(y座標)
+        this.fill = '#111'; //文字の色
+    },
+
+
+    //毎フレームごとに、どうふるまうか
+    update: function(app) {
+        this.text = SCORE; //textに現在のSCOREを代入
+    }
 });
 
 
@@ -48,6 +83,9 @@ phina.define("MainScene", {
         this.superInit(); //初期化のおまじない
 
         this.backgroundColor = '#1ee'; // 背景色
+
+        //score表示用Labelを、シーンに追加
+        scoreLabel({}).addChildTo(this);
 
         // グループを生成
         this.recGroup = DisplayElement().addChildTo(this);
