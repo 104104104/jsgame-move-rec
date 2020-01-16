@@ -9,6 +9,7 @@ phina.globalize(); // おまじない(phina.jsをグローバルに展開)
 const RECTANGLE_DIAMETER = 60; // 正方形の一辺の長さ
 const DISPLAY_WIDTH = 640; // ゲーム画面の横幅
 const DISPLAY_HEIGHT = 960; // ゲーム画面の縦幅
+const ONE_SECOND_FPS = 30; //ゲーム画面を、一秒間に何回更新するか
 
 var SCORE = 0; //スコアはグローバルで管理する(その方が簡単なので…)
 
@@ -94,7 +95,7 @@ phina.define("MainScene", {
 
     //毎フレームごとに、どう振る舞うか
     update: function(app) {
-        if (app.frame % 30 == 0) { //1秒に一回、四角を追加する
+        if (app.frame % ONE_SECOND_FPS == 0) { //1秒に一回、四角を追加する
 
             var tempRec = Rec({}); //tempRecに四角を一旦代入し、初期値を設定する
             tempRec.x = getRandomInt(DISPLAY_WIDTH); //表示位置(x座標)を画面内でランダムに設定する
@@ -121,7 +122,7 @@ phina.main(function() {
         startLabel: 'main', // MainScene から開始
         width: DISPLAY_WIDTH, //画面の横幅
         height: DISPLAY_HEIGHT, //画面の縦幅
-        fps: 30, //fps
+        fps: ONE_SECOND_FPS, //毎秒何回画面を更新するかの設定。
     });
 
     // 実行
